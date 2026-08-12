@@ -6,11 +6,11 @@ namespace EmployeeProject
 {
   public class Employee
   {
-    // public int EmployeeID { get; set; }
-    // public string FirstName { get; set; }
-    // public string LastName { get; set; }
-    // public string Department { get; set; }
-    // public decimal Salary { get; set; }
-    // public DateTime HireDate { get; set; }
+    public required int EmployeeID { get; set; }
+    public string FirstName { get; set; } = string.Empty;
+    public string LastName { get; set; } = string.Empty;
+    public string Department { get; set; } = string.Empty;
+    public required decimal Salary { get; set; }
+    public DateTime HireDate { get; set; }
   }
 }

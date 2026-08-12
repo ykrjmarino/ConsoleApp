@@ -1,10 +1,12 @@
 using System;
+using EmployeeProject.Operations;
+using Microsoft.VisualBasic;
 
 namespace EmployeeProject
 {
   public class Menu
   {
-    private int Choice(string message)
+    private static int Choice(string message) //for letters only
     {
       if (!int.TryParse(Console.ReadLine(), out int mainChoice)) {
         Console.Clear();
@@ -17,14 +19,66 @@ namespace EmployeeProject
         Console.WriteLine($"       {message}      "); 
         Console.WriteLine("========================================"); 
         Thread.Sleep(900); Console.Clear();
-        return -1;
+        return -143;
       }
       return mainChoice;
+    }
+
+    private static void ClearTerminal()
+    {
+      Console.WriteLine("Press Enter to continue...");
+      Console.ReadLine();
+      Console.Clear();
+    }
+
+    private static void ShowViewingEmployee()
+    {
+      Console.Clear();
+      Console.WriteLine("========================================"); 
+      Console.WriteLine("           Viewing of Employees         "); 
+      Console.WriteLine("========================================"); 
+      Console.WriteLine(">  [1] Search an Employee");
+      Console.WriteLine(">  [2] View ALL Employees");
+      Console.WriteLine(">  [3] Back Menu");
+      Console.Write(">> "); 
+    }
+
+    private void SearchEmployee(int viewChoice, Get getFromDb)
+    {
+      Console.Write("Employee ID: ");
+                
+        do
+        {
+          int employeeID = Choice("Input valid Employee ID number");
+          if (employeeID == -143) continue;
+          
+          Employee foundEmployee = getFromDb.ById(employeeID);
+
+          if (foundEmployee == null) {Console.WriteLine("Invalid Emplyee ID"); continue;}
+          
+
+          Console.WriteLine($"{foundEmployee.EmployeeID} || {foundEmployee.FirstName} {foundEmployee.LastName} {foundEmployee.Department} {foundEmployee.Salary} {foundEmployee.HireDate}");
+
+          ClearTerminal();
+
+        } while (viewChoice == 3);
+    }
+
+    private void ShowAllEmployee(Get getFromDb)
+    {
+      List<Employee> employees = getFromDb.All();
+
+      foreach (Employee e in employees)
+      {
+        Console.WriteLine($"{e.EmployeeID} || {e.FirstName} {e.LastName} {e.Department} {e.Salary} {e.HireDate}");
+      }
+      ClearTerminal();
     }
 
     public void ShowMainMenu()
     {
       bool alisNaBa = false;
+      var getFromDb = new Get();
       do
       {
         Console.WriteLine("========================================"); 
@@ -33,44 +87,26 @@ namespace EmployeeProject
         Console.WriteLine(">  [1] View Employee(s)");
         Console.WriteLine(">  [2] Add Employee");
         Console.WriteLine(">  [3] Update Employee");
-        Console.WriteLine(">  [0] Exit");//try doing any keys will be the exit button? or just print invalid
+        Console.WriteLine(">  [0] Exit");
         Console.Write(">> ");
         
         int mainChoice = Choice("Input a valid number choice");
-        if (mainChoice == -1) continue;
+        if (mainChoice == -143) continue;
 
         switch (mainChoice) {
           case 1:
-            Console.Clear();
-            Console.WriteLine("========================================"); 
-            Console.WriteLine("           Employee Management          "); 
-            Console.WriteLine("========================================"); 
-            Console.WriteLine(">  [1] Search an Employee");
-            Console.WriteLine(">  [2] View ALL Employees");
-            Console.WriteLine(">  [3] Back Menu");
-            Console.Write(">> "); 
+            ShowViewingEmployee();
+
             int viewChoice = Choice("Input a valid number choice");
-            if (viewChoice == -1) continue;
+            if (viewChoice == -143) continue;
 
             switch (viewChoice)
             {
-              case 1:  
-                Console.Write("Employee ID: ");
-                
-                do
-                {
-                  int employeeID = Choice("Input valid Employee ID number");
-                  if (employeeID == -1) continue;
-
-                  Console.WriteLine($"Success! Parsed number: {employeeID}");
-                  Console.WriteLine("Press Enter to continue...");
-                  Console.ReadLine();
-                  Console.Clear();
-                } while (viewChoice == 3);
-
+              case 1:  //view one employee
+                SearchEmployee(viewChoice, getFromDb);
                 break;
-              case 2:  
-                Console.WriteLine("pakita lahat here");
+              case 2:  //view all employee
+                ShowAllEmployee(getFromDb);
                 break;
               case 3:  
                 Console.Clear();
@@ -79,7 +115,6 @@ namespace EmployeeProject
                 Console.WriteLine("Invalid! Input numbers from the options.");
                 Thread.Sleep(800); Console.Clear();
                 break;
-
             }
             break;
           case 2:

@@ -9,8 +9,6 @@ namespace EmployeeProject
   {
     static void Main(string[] args)
     {
-      //var getService = new Get();
-      
       var menu = new Menu();
 
       menu.ShowMainMenu();
