@@ -1,19 +1,29 @@
-﻿using System;
+﻿// Program.cs
+using System;
 using System.Collections.Generic;
+using EmployeeProject.Operations;
 
 namespace EmployeeProject
 {
-    class Program
+  class Program
+  {
+    static void Main(string[] args)
     {
-        static void Main(string[] args)
-        {
-            var getService = new Get();
-            List<Employee> employees = getService.All();
+      //var getService = new Get();
+      
+      var menu = new Menu();
 
-            foreach (var e in employees)
-            {
-                Console.WriteLine($"{e.Id} - {e.FirstName} {e.LastName} - {e.Department} - {e.Salary} - {e.HireDate}");
-            }
-        }
+      menu.ShowMainMenu();
+      /*
+      List<Employee> employees = getService.All();
+
+      foreach (var e in employees)
+      {
+        Console.WriteLine($"{e.EmployeeID} - {e.FirstName} {e.LastName} - {e.Department} - {e.Salary} - {e.HireDate}");
+      }
+      */
+
+      //
     }
+  }
 }

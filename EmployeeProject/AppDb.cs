@@ -1,12 +1,17 @@
+// AppDb.cs
+
 using Microsoft.EntityFrameworkCore;
 
-public class AppDb : DbContext
+namespace EmployeeProject
 {
-    public DbSet<Employee> Employees { get; set; }
-
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    public class AppDb : DbContext
     {
-        optionsBuilder.UseSqlServer("Server=SSCLTRYRMARINO;Database=ConsoleDB;Trusted_Connection=True;TrustServerCertificate=True;");
+        public DbSet<Employee> Employees { get; set; }
+
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            optionsBuilder.UseSqlServer("Server=SSCLTRYRMARINO;Database=ConsoleDB;Trusted_Connection=True;TrustServerCertificate=True;");
+        }
     }
 }
 
