@@ -7,7 +7,7 @@ namespace EmployeeProject.Operations
     public void AddEmployee(Employee employee) //doesnt return, just runs... good for post
     {
       //email 
-      string alterEmail()
+      string AlterEmail()
       {
         string emplFirstName = employee.FirstName.ToLower();
         string emplMiddleName = employee.MiddleName.ToLower();
@@ -16,10 +16,28 @@ namespace EmployeeProject.Operations
         char first = emplFirstName.FirstOrDefault(); //returns 0 if empty.. sana mafill up-an lahat
         char mid = emplMiddleName.FirstOrDefault();
 
-        return $"{first}{mid}{emplLastName}@company.com";
+        string baseEmail = $"{first}{mid}{emplLastName}";
+        string altered = $"{baseEmail}@company.com";
+
+        //fetch DB emails if there's a dupe.. we count
+        using var db = new AppDb();
+        List<string> similarEmails = db.Employees
+          .Where(e => e.Email.StartsWith(baseEmail))
+          .Select(e => e.Email)
+          .AsEnumerable()
+          .Where(e => (e[baseEmail.Length] == '@') || (char.IsDigit(e[baseEmail.Length])))
+          .ToList();
+        
+        if (similarEmails.Count >= 1)
+        {
+          altered = $"{baseEmail}{similarEmails.Count}@company.com";
+        }
+        return altered;
       }
+      
+      
       //add the email
-      employee.Email = alterEmail();
+      employee.Email = AlterEmail();
 
       //send to db
       using var db = new AppDb();
