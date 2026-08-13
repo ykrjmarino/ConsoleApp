@@ -50,7 +50,8 @@ namespace EmployeeProject
         Console.WriteLine("│               EMPLOYEE DETAILS               │");
         Console.WriteLine("├──────────────────────────────────────────────┤");
         Console.WriteLine($"│ ID:          {e.EmployeeID,-31} │");
-        Console.WriteLine($"│ Name:        {$"{e.FirstName} {e.LastName}",-31} │");
+        Console.WriteLine($"│ Name:        {$"{e.FirstName} {e.MiddleName.FirstOrDefault()}. {e.LastName}",-31} │");
+        Console.WriteLine($"│ Department:  {e.Email,-31} │");
         Console.WriteLine($"│ Department:  {e.Department,-31} │");
         Console.WriteLine($"│ Salary:      {e.Salary,-31:C2} │");
         Console.WriteLine($"│ Hire Date:   {e.HireDate,-31:yyyy-MM-dd} │");
@@ -71,7 +72,7 @@ namespace EmployeeProject
       Console.Write(">> ");
     }
 
-    private static (string FirstName, string LastName, string Department, decimal Salary, DateTime HireDate) ConsoleAddEmployee() //(string, decimal..) are the types before the name
+    private static (string FirstName, string MiddleName,string LastName, string Department, decimal Salary, DateTime HireDate) ConsoleAddEmployee() //(string, decimal..) are the types before the name
     {
       Console.Clear();
       Console.WriteLine("========================================"); 
@@ -80,6 +81,9 @@ namespace EmployeeProject
 
       Console.Write(">  First Name: "); 
       string firstNameInput = Console.ReadLine() ?? "";
+
+      Console.Write(">  Middle Name: ");
+      string middleNameInput = Console.ReadLine() ?? "";
 
       Console.Write(">  Last Name: ");
       string lastNameInput = Console.ReadLine() ?? "";
@@ -98,8 +102,9 @@ namespace EmployeeProject
       Console.WriteLine(">  Hire Date: ngayon");
       DateTime hireDate = DateTime.Now; 
 
-      return (firstNameInput, lastNameInput, departmentInput, salaryInput, hireDate);
+      return (firstNameInput, middleNameInput, lastNameInput, departmentInput, salaryInput, hireDate);
     }
+    
     private void SearchEmployee(int viewChoice, Get getFromDb)
     {
       Console.Write(">  Employee ID: ");
@@ -137,8 +142,6 @@ namespace EmployeeProject
 
       foreach (Employee e in employees)
       {
-        // Console.WriteLine($"{e.EmployeeID} || {e.FirstName} {e.LastName} {e.Department} {e.Salary} {e.HireDate}");
-
         ConsoleEmployeeDetails(e);
       }
       ClearTerminal();
@@ -181,11 +184,12 @@ namespace EmployeeProject
             }
             break;
           case 2: //POST
-            var (firstName, lastName, department, salary, hireDate) = ConsoleAddEmployee();
+            var (firstName, middleName, lastName, department, salary, hireDate) = ConsoleAddEmployee();
 
             Employee newEmpl = new Employee
             {
               FirstName = firstName,
+              MiddleName = middleName,
               LastName = lastName,
               Department = department,
               Salary = salary,
