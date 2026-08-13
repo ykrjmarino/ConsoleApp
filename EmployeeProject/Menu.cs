@@ -102,23 +102,28 @@ namespace EmployeeProject
     }
     private void SearchEmployee(int viewChoice, Get getFromDb)
     {
-      Console.Write("Employee ID: ");
-                
+      Console.Write(">  Employee ID: ");
+      int employeeID;
         do
         {
-          int employeeID = Choice("Input valid Employee ID number");
-          if (employeeID == -143) continue;
+          while (!int.TryParse(Console.ReadLine(), out employeeID)) //while the input is not a number(s)
+          { 
+            Console.WriteLine("Invalid ID! Input valid Employee ID number");
+            Console.Write(">  Employee ID: ");
+          }
           
-          Employee foundEmployee = getFromDb.ById(employeeID);
+          Employee? foundEmployee = getFromDb.ById(employeeID);
 
           if (foundEmployee == null) {
-            Console.WriteLine("Invalid Emplyee ID"); 
+            Thread.Sleep(500); Console.Clear();
+            Console.WriteLine($"Employee ID: {employeeID}"); 
+            Console.WriteLine("========================================"); 
+            Console.WriteLine("           No Employee Found...         "); 
+            Console.WriteLine("========================================"); 
             ClearTerminal();
             continue;
           }
           
-          // Console.WriteLine($"{foundEmployee.EmployeeID} || {foundEmployee.FirstName} {foundEmployee.LastName} {foundEmployee.Department} {foundEmployee.Salary} {foundEmployee.HireDate}");
-
           ConsoleEmployeeDetails(foundEmployee);
 
           ClearTerminal();
