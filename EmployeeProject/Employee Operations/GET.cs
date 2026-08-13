@@ -10,7 +10,7 @@ namespace EmployeeProject.Operations
       return db.Employees.ToList();
     }
 
-    public Employee ById(int id)
+    public Employee? ById(int id)
     {
       using var db = new AppDb();
       return db.Employees.FirstOrDefault(e => e.EmployeeID == id);

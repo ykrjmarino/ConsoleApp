@@ -71,6 +71,35 @@ namespace EmployeeProject
       Console.Write(">> ");
     }
 
+    private static (string FirstName, string LastName, string Department, decimal Salary, DateTime HireDate) ConsoleAddEmployee() //(string, decimal..) are the types before the name
+    {
+      Console.Clear();
+      Console.WriteLine("========================================"); 
+      Console.WriteLine("             Create an Employee         "); 
+      Console.WriteLine("========================================"); 
+
+      Console.Write(">  First Name: "); 
+      string firstNameInput = Console.ReadLine() ?? "";
+
+      Console.Write(">  Last Name: ");
+      string lastNameInput = Console.ReadLine() ?? "";
+        
+      Console.Write(">  Department: ");
+      string departmentInput = Console.ReadLine() ?? "";
+
+      Console.Write(">  Salary: ");
+      decimal salaryInput;
+      while (!decimal.TryParse(Console.ReadLine(), out salaryInput) || salaryInput < 0)
+      { 
+        Console.WriteLine("Invalid salary! Please enter a positive number");
+        Console.Write(">  Salary: ");
+      }
+
+      Console.WriteLine(">  Hire Date: ngayon");
+      DateTime hireDate = DateTime.Now; 
+
+      return (firstNameInput, lastNameInput, departmentInput, salaryInput, hireDate);
+    }
     private void SearchEmployee(int viewChoice, Get getFromDb)
     {
       Console.Write("Employee ID: ");
@@ -114,6 +143,7 @@ namespace EmployeeProject
     {
       bool alisNaBa = false;
       var getFromDb = new Get();
+      var postToDb = new Post();
       do
       {
         ConsoleMenuChoices();
@@ -122,7 +152,7 @@ namespace EmployeeProject
         if (mainChoice == -143) continue;
 
         switch (mainChoice) {
-          case 1:
+          case 1: //GET
             ConsoleViewingEmployee();
 
             int viewChoice = Choice("Input a valid number choice");
@@ -145,8 +175,21 @@ namespace EmployeeProject
                 break;
             }
             break;
-          case 2:
-            Console.WriteLine("Add Employee");
+          case 2: //POST
+            var (firstName, lastName, department, salary, hireDate) = ConsoleAddEmployee();
+
+            Employee newEmpl = new Employee
+            {
+              FirstName = firstName,
+              LastName = lastName,
+              Department = department,
+              Salary = salary,
+              HireDate = hireDate
+            };
+
+            postToDb.AddEmployee(newEmpl);
+            Console.WriteLine("Employee added successfully!");
+            ClearTerminal();
             break;
           case 3:
             Console.WriteLine("Update Employee");
