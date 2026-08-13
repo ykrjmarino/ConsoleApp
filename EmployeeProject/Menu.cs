@@ -31,7 +31,7 @@ namespace EmployeeProject
       Console.Clear();
     }
 
-    private static void ShowViewingEmployee()
+    private static void ConsoleViewingEmployee()
     {
       Console.Clear();
       Console.WriteLine("========================================"); 
@@ -41,6 +41,34 @@ namespace EmployeeProject
       Console.WriteLine(">  [2] View ALL Employees");
       Console.WriteLine(">  [3] Back Menu");
       Console.Write(">> "); 
+    }
+
+    private static void ConsoleEmployeeDetails(Employee e)
+    {
+        Console.ForegroundColor = ConsoleColor.Cyan;
+        Console.WriteLine("┌──────────────────────────────────────────────┐");
+        Console.WriteLine("│               EMPLOYEE DETAILS               │");
+        Console.WriteLine("├──────────────────────────────────────────────┤");
+        Console.WriteLine($"│ ID:          {e.EmployeeID,-31} │");
+        Console.WriteLine($"│ Name:        {$"{e.FirstName} {e.LastName}",-31} │");
+        Console.WriteLine($"│ Department:  {e.Department,-31} │");
+        Console.WriteLine($"│ Salary:      {e.Salary,-31:C2} │");
+        Console.WriteLine($"│ Hire Date:   {e.HireDate,-31:yyyy-MM-dd} │");
+        Console.ForegroundColor = ConsoleColor.Cyan;
+        Console.WriteLine("└──────────────────────────────────────────────┘");
+        Console.ResetColor();
+    }
+
+    private static void ConsoleMenuChoices()
+    {
+      Console.WriteLine("========================================"); 
+      Console.WriteLine("           Employee Management          "); 
+      Console.WriteLine("========================================"); 
+      Console.WriteLine(">  [1] View Employee(s)");
+      Console.WriteLine(">  [2] Add Employee");
+      Console.WriteLine(">  [3] Update Employee");
+      Console.WriteLine(">  [0] Exit");
+      Console.Write(">> ");
     }
 
     private void SearchEmployee(int viewChoice, Get getFromDb)
@@ -62,19 +90,7 @@ namespace EmployeeProject
           
           // Console.WriteLine($"{foundEmployee.EmployeeID} || {foundEmployee.FirstName} {foundEmployee.LastName} {foundEmployee.Department} {foundEmployee.Salary} {foundEmployee.HireDate}");
 
-          Console.ForegroundColor = ConsoleColor.DarkYellow;
-          Console.WriteLine("┌──────────────────────────────────────────────┐");
-          Console.WriteLine("│               EMPLOYEE DETAILS               │");
-          Console.WriteLine("├──────────────────────────────────────────────┤");
-          Console.WriteLine($"│ ID:          {foundEmployee.EmployeeID,-31} │");
-          Console.WriteLine($"│ Name:        {$"{foundEmployee.FirstName} {foundEmployee.LastName}",-31} │");
-          Console.WriteLine($"│ Department:  {foundEmployee.Department,-31} │");
-          Console.WriteLine($"│ Salary:      {foundEmployee.Salary,-31:C2} │");
-          Console.WriteLine($"│ Hire Date:   {foundEmployee.HireDate,-31:yyyy-MM-dd} │");
-
-          Console.ForegroundColor = ConsoleColor.DarkYellow;
-          Console.WriteLine("└──────────────────────────────────────────────┘");
-          Console.ResetColor();
+          ConsoleEmployeeDetails(foundEmployee);
 
           ClearTerminal();
 
@@ -89,19 +105,7 @@ namespace EmployeeProject
       {
         // Console.WriteLine($"{e.EmployeeID} || {e.FirstName} {e.LastName} {e.Department} {e.Salary} {e.HireDate}");
 
-        Console.ForegroundColor = ConsoleColor.Cyan;
-        Console.WriteLine("┌──────────────────────────────────────────────┐");
-        Console.WriteLine("│               EMPLOYEE DETAILS               │");
-        Console.WriteLine("├──────────────────────────────────────────────┤");
-        Console.WriteLine($"│ ID:          {e.EmployeeID,-31} │");
-        Console.WriteLine($"│ Name:        {$"{e.FirstName} {e.LastName}",-31} │");
-        Console.WriteLine($"│ Department:  {e.Department,-31} │");
-        Console.WriteLine($"│ Salary:      {e.Salary,-31:C2} │");
-        Console.WriteLine($"│ Hire Date:   {e.HireDate,-31:yyyy-MM-dd} │");
-        Console.ForegroundColor = ConsoleColor.Cyan;
-        Console.WriteLine("└──────────────────────────────────────────────┘");
-        Console.ResetColor();
-
+        ConsoleEmployeeDetails(e);
       }
       ClearTerminal();
     }
@@ -112,21 +116,14 @@ namespace EmployeeProject
       var getFromDb = new Get();
       do
       {
-        Console.WriteLine("========================================"); 
-        Console.WriteLine("           Employee Management          "); 
-        Console.WriteLine("========================================"); 
-        Console.WriteLine(">  [1] View Employee(s)");
-        Console.WriteLine(">  [2] Add Employee");
-        Console.WriteLine(">  [3] Update Employee");
-        Console.WriteLine(">  [0] Exit");
-        Console.Write(">> ");
+        ConsoleMenuChoices();
         
         int mainChoice = Choice("Input a valid number choice");
         if (mainChoice == -143) continue;
 
         switch (mainChoice) {
           case 1:
-            ShowViewingEmployee();
+            ConsoleViewingEmployee();
 
             int viewChoice = Choice("Input a valid number choice");
             if (viewChoice == -143) continue;
@@ -170,3 +167,4 @@ namespace EmployeeProject
     }
   }
 }
+
