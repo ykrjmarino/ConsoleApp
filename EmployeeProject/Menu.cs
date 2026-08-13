@@ -54,10 +54,27 @@ namespace EmployeeProject
           
           Employee foundEmployee = getFromDb.ById(employeeID);
 
-          if (foundEmployee == null) {Console.WriteLine("Invalid Emplyee ID"); continue;}
+          if (foundEmployee == null) {
+            Console.WriteLine("Invalid Emplyee ID"); 
+            ClearTerminal();
+            continue;
+          }
           
+          // Console.WriteLine($"{foundEmployee.EmployeeID} || {foundEmployee.FirstName} {foundEmployee.LastName} {foundEmployee.Department} {foundEmployee.Salary} {foundEmployee.HireDate}");
 
-          Console.WriteLine($"{foundEmployee.EmployeeID} || {foundEmployee.FirstName} {foundEmployee.LastName} {foundEmployee.Department} {foundEmployee.Salary} {foundEmployee.HireDate}");
+          Console.ForegroundColor = ConsoleColor.DarkYellow;
+          Console.WriteLine("┌──────────────────────────────────────────────┐");
+          Console.WriteLine("│               EMPLOYEE DETAILS               │");
+          Console.WriteLine("├──────────────────────────────────────────────┤");
+          Console.WriteLine($"│ ID:          {foundEmployee.EmployeeID,-31} │");
+          Console.WriteLine($"│ Name:        {$"{foundEmployee.FirstName} {foundEmployee.LastName}",-31} │");
+          Console.WriteLine($"│ Department:  {foundEmployee.Department,-31} │");
+          Console.WriteLine($"│ Salary:      {foundEmployee.Salary,-31:C2} │");
+          Console.WriteLine($"│ Hire Date:   {foundEmployee.HireDate,-31:yyyy-MM-dd} │");
+
+          Console.ForegroundColor = ConsoleColor.DarkYellow;
+          Console.WriteLine("└──────────────────────────────────────────────┘");
+          Console.ResetColor();
 
           ClearTerminal();
 
@@ -70,7 +87,21 @@ namespace EmployeeProject
 
       foreach (Employee e in employees)
       {
-        Console.WriteLine($"{e.EmployeeID} || {e.FirstName} {e.LastName} {e.Department} {e.Salary} {e.HireDate}");
+        // Console.WriteLine($"{e.EmployeeID} || {e.FirstName} {e.LastName} {e.Department} {e.Salary} {e.HireDate}");
+
+        Console.ForegroundColor = ConsoleColor.Cyan;
+        Console.WriteLine("┌──────────────────────────────────────────────┐");
+        Console.WriteLine("│               EMPLOYEE DETAILS               │");
+        Console.WriteLine("├──────────────────────────────────────────────┤");
+        Console.WriteLine($"│ ID:          {e.EmployeeID,-31} │");
+        Console.WriteLine($"│ Name:        {$"{e.FirstName} {e.LastName}",-31} │");
+        Console.WriteLine($"│ Department:  {e.Department,-31} │");
+        Console.WriteLine($"│ Salary:      {e.Salary,-31:C2} │");
+        Console.WriteLine($"│ Hire Date:   {e.HireDate,-31:yyyy-MM-dd} │");
+        Console.ForegroundColor = ConsoleColor.Cyan;
+        Console.WriteLine("└──────────────────────────────────────────────┘");
+        Console.ResetColor();
+
       }
       ClearTerminal();
     }
@@ -137,15 +168,5 @@ namespace EmployeeProject
 
       } while (!alisNaBa); //not true => false
     }
-    
-    //  public void ShowInvalid()
-    //  {
-      
-    //  }
-    
-    //  public void ShowGoodbye() //bye lang...
-    //  {
-      
-    //  }
   }
 }
