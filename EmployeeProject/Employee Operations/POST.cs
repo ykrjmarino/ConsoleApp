@@ -22,10 +22,10 @@ namespace EmployeeProject.Operations
         //fetch DB emails if there's a dupe.. we count
         using var db = new AppDb();
         List<string> similarEmails = db.Employees
-          .Where(e => e.Email.StartsWith(baseEmail))
+          .Where(e => e.Email.StartsWith(baseEmail)) //starts with same email
           .Select(e => e.Email)
           .AsEnumerable()
-          .Where(e => (e[baseEmail.Length] == '@') || (char.IsDigit(e[baseEmail.Length])))
+          .Where(e => (e[baseEmail.Length] == '@') || (char.IsDigit(e[baseEmail.Length]))) //if same length, check iss '@' or number kasunod,, meaning dupli
           .ToList();
         
         if (similarEmails.Count >= 1)
@@ -34,7 +34,6 @@ namespace EmployeeProject.Operations
         }
         return altered;
       }
-      
       
       //add the email
       employee.Email = AlterEmail();

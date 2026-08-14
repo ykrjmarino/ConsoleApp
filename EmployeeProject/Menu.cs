@@ -8,7 +8,7 @@ namespace EmployeeProject
   {
     private static int Choice(string message) //for letters only
     {
-      if (!int.TryParse(Console.ReadLine(), out int mainChoice)) {
+      if (!int.TryParse(Console.ReadLine(), out int mainChoice) || (mainChoice < 0)) {
         Console.Clear();
         Console.WriteLine("========================================"); 
         Console.WriteLine("                 Invalid!               "); 
@@ -51,7 +51,7 @@ namespace EmployeeProject
         Console.WriteLine("├──────────────────────────────────────────────┤");
         Console.WriteLine($"│ ID:          {e.EmployeeID,-31} │");
         Console.WriteLine($"│ Name:        {$"{e.FirstName} {e.MiddleName.FirstOrDefault()}. {e.LastName}",-31} │");
-        Console.WriteLine($"│ Department:  {e.Email,-31} │");
+        Console.WriteLine($"│ Email:       {e.Email,-31} │");
         Console.WriteLine($"│ Department:  {e.Department,-31} │");
         Console.WriteLine($"│ Salary:      {e.Salary,-31:C2} │");
         Console.WriteLine($"│ Hire Date:   {e.HireDate,-31:yyyy-MM-dd} │");
@@ -62,6 +62,7 @@ namespace EmployeeProject
 
     private static void ConsoleMenuChoices()
     {
+      Console.Clear();
       Console.WriteLine("========================================"); 
       Console.WriteLine("           Employee Management          "); 
       Console.WriteLine("========================================"); 
@@ -69,6 +70,21 @@ namespace EmployeeProject
       Console.WriteLine(">  [2] Add Employee");
       Console.WriteLine(">  [3] Update Employee");
       Console.WriteLine(">  [0] Exit");
+      Console.Write(">> ");
+    }
+
+    private static void ConsoleChoosePatch()
+    {
+      Console.WriteLine("========================================"); 
+      Console.WriteLine("             Update Employee            ");
+      Console.WriteLine("========================================");
+      Console.WriteLine(">  [1] First Name");
+      Console.WriteLine(">  [2] Middle Name");
+      Console.WriteLine(">  [3] Last Name");
+      Console.WriteLine(">  [4] Department");
+      Console.WriteLine(">  [5] Salary");
+      Console.WriteLine(">  [6] Email");
+      Console.WriteLine(">  [0] Back");
       Console.Write(">> ");
     }
 
@@ -147,11 +163,104 @@ namespace EmployeeProject
       ClearTerminal();
     }
 
+    private void UpdateEmployee(Get getFromDb, Update updateDb)
+    {
+      //ask for employee ID to update
+      Console.Write(">  Employee ID: ");
+      int employeeID;
+      while (!int.TryParse(Console.ReadLine(), out employeeID)) //while the input is not a number(s)
+      { 
+        Console.WriteLine("Invalid ID! Input valid Employee ID number");
+        Console.Write(">  Employee ID: ");
+      }
+      
+      Employee? foundEmployee = getFromDb.ById(employeeID);
+
+      if (foundEmployee == null) {
+        Thread.Sleep(500); Console.Clear();
+        Console.WriteLine($"Employee ID: {employeeID}"); 
+        Console.WriteLine("========================================"); 
+        Console.WriteLine("           No Employee Found...         "); 
+        Console.WriteLine("========================================"); 
+        ClearTerminal();
+        return;
+      }
+      
+      Thread.Sleep(800); Console.Clear();
+      ConsoleEmployeeDetails(foundEmployee);
+
+      //choose what field to change
+      ConsoleChoosePatch();
+      int patchChoice;
+      while (!int.TryParse(Console.ReadLine(), out patchChoice)) 
+      { //while the input is not a number(s)
+        Console.WriteLine("Invalid Choice!");
+        Console.Write(">> ");
+      }
+
+      switch (patchChoice)
+      {
+        case 1: // First Name
+          Console.Write(">  First Name: ");
+          string firstName = Console.ReadLine() ?? "";
+
+          updateDb.UpdateEmployee(employeeID, patchChoice, firstName, null);
+          Console.WriteLine("Updated successfully!"); ClearTerminal();
+          break;
+        case 2: // Middle Name
+          Console.Write(">  Middle Name: ");
+          string midName = Console.ReadLine() ?? "";
+
+          updateDb.UpdateEmployee(employeeID, patchChoice, midName, null);
+          Console.WriteLine("Updated successfully!"); ClearTerminal();
+          break;
+        case 3: // Lst Name
+          Console.Write(">  Last Name: ");
+          string lastName = Console.ReadLine() ?? "";
+
+          updateDb.UpdateEmployee(employeeID, patchChoice, lastName, null);
+          Console.WriteLine("Updated successfully!"); ClearTerminal();
+          break;
+        case 4: // Dept
+          Console.Write(">  Department: ");
+          string dept = Console.ReadLine() ?? "";
+
+          updateDb.UpdateEmployee(employeeID, patchChoice, dept, null);
+          Console.WriteLine("Updated successfully!"); ClearTerminal();
+          break;
+        case 5: // Salary
+          Console.Write(">  Salary: ");
+          decimal salaryInput;
+          while (!decimal.TryParse(Console.ReadLine(), out salaryInput) || salaryInput < 0)
+          { 
+            Console.WriteLine("Invalid salary! Please enter a positive number");
+            Console.Write(">  Salary: ");
+          }
+          updateDb.UpdateEmployee(employeeID, patchChoice, null, salaryInput);
+          Console.WriteLine("Updated successfully!"); ClearTerminal();
+          break;
+        case 6: // Email
+          Console.Write(">  Email: ");
+          string email = Console.ReadLine() ?? "";
+          updateDb.UpdateEmployee(employeeID, patchChoice, email, null);
+          Console.WriteLine("Updated successfully!"); ClearTerminal();
+          break;
+        case 0:
+          Console.Clear();
+          break;
+        default:
+          Console.WriteLine("Invalid! Input numbers from the options.");
+          Thread.Sleep(800); Console.Clear();
+          break;
+      }
+    }
+
     public void ShowMainMenu()
     {
       bool alisNaBa = false;
       var getFromDb = new Get();
       var postToDb = new Post();
+      var updateDb = new Update();
       do
       {
         ConsoleMenuChoices();
@@ -162,7 +271,6 @@ namespace EmployeeProject
         switch (mainChoice) {
           case 1: //GET
             ConsoleViewingEmployee();
-
             int viewChoice = Choice("Input a valid number choice");
             if (viewChoice == -143) continue;
 
@@ -201,7 +309,7 @@ namespace EmployeeProject
             ClearTerminal();
             break;
           case 3:
-            Console.WriteLine("Update Employee");
+              UpdateEmployee(getFromDb, updateDb);
             break;
           case 0:
             Console.Clear();
