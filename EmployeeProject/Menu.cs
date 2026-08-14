@@ -55,6 +55,7 @@ namespace EmployeeProject
         Console.WriteLine($"│ Department:  {e.Department,-31} │");
         Console.WriteLine($"│ Salary:      {e.Salary,-31:C2} │");
         Console.WriteLine($"│ Hire Date:   {e.HireDate,-31:yyyy-MM-dd} │");
+        Console.WriteLine($"│ Status:      {e.Status,-31} │");
         Console.ForegroundColor = ConsoleColor.Cyan;
         Console.WriteLine("└──────────────────────────────────────────────┘");
         Console.ResetColor();
@@ -70,6 +71,7 @@ namespace EmployeeProject
       Console.WriteLine(">  [2] Add Employee");
       Console.WriteLine(">  [3] Update Employee");
       Console.WriteLine(">  [4] Delete Employee");
+      Console.WriteLine(">  [5] Restore Employee");
       Console.WriteLine(">  [0] Exit");
       Console.Write(">> ");
     }
@@ -115,8 +117,6 @@ namespace EmployeeProject
         Console.WriteLine("Invalid salary! Please enter a positive number");
         Console.Write(">  Salary: ");
       }
-
-      Console.WriteLine(">  Hire Date: ngayon");
       DateTime hireDate = DateTime.Now; 
 
       return (firstNameInput, middleNameInput, lastNameInput, departmentInput, salaryInput, hireDate);
@@ -291,8 +291,6 @@ namespace EmployeeProject
 
         if (shouldDelete?.Trim().ToLower() == "yes")
         {
-          Console.WriteLine("shingshong oo");
-
           bool deletedEmployee = deleteFromDb.DeleteById(employeeID); //return true of false
           //stores and executes
 
@@ -312,13 +310,68 @@ namespace EmployeeProject
       }   
     }
 
+    private void RestoreEmployee(Get getFromDb, Update updateDb)
+    {
+      //ask for employee ID to delete (soft) naol
+      Console.Write(">  Employee ID: ");
+      int employeeID;
+      while (!int.TryParse(Console.ReadLine(), out employeeID)) //while the input is not a number(s)
+      { 
+        Console.WriteLine("Invalid ID! Input valid Employee ID number");
+        Console.Write(">  Employee ID: ");
+      }
+      
+      Employee? foundEmployee = getFromDb.InactiveById(employeeID); //returns the employee details
+
+      if (foundEmployee == null) {
+        Thread.Sleep(500); Console.Clear();
+        Console.WriteLine($"Employee ID: {employeeID}"); 
+        Console.WriteLine("========================================"); 
+        Console.WriteLine("           No Employee Found...         "); 
+        Console.WriteLine("========================================"); 
+        ClearTerminal();
+        return;
+      }
+      
+      Thread.Sleep(800); Console.Clear();
+      ConsoleEmployeeDetails(foundEmployee);
+
+      Console.WriteLine("Are you sure you want to restore this Employee? (You got two choices: yes or !yes)");
+      Console.Write(">> ");
+
+      while (true) 
+      { 
+        string? shouldRestore = Console.ReadLine();
+
+        if (shouldRestore?.Trim().ToLower() == "yes")
+        {
+          bool restoredEmployee = updateDb.RestoreById(employeeID); //return true of false
+          //stores and executes
+
+          if (restoredEmployee) Console.WriteLine("Employee successfully restored!");
+          else Console.WriteLine("Employee not found or restoration failed.");
+
+          ClearTerminal();
+          break;
+        } 
+        if (shouldRestore?.Trim().ToLower() == "!yes"){
+          Console.WriteLine("Canceled action. Employee not restored.");
+          ClearTerminal();
+          break;
+        }
+        Console.WriteLine("Invalid Input! Please type 'yes' or '!yes'");
+        Console.Write(">> ");
+      }   
+    }
+
+
     public void ShowMainMenu()
     {
       bool alisNaBa = false;
       var getFromDb = new Get();
       var postToDb = new Post();
-      var updateDb = new Update(); //not needed here kase nadeclare na sa update method(?)
-      var deleteFromDb = new Delete(); //samedt here
+      var updateDb = new Update(); 
+      var deleteFromDb = new Delete();
 
       do
       {
@@ -373,6 +426,9 @@ namespace EmployeeProject
           case 4: //DELETE --- DeleteEmployee(getFromDb, deleteFromDb);
               DeleteEmployee(getFromDb, deleteFromDb);
             break;
+          case 5:
+              RestoreEmployee(getFromDb, updateDb);
+              break;
           case 0:
             Console.Clear();
             Console.WriteLine("              bye.            ");

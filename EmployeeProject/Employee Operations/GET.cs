@@ -20,5 +20,13 @@ namespace EmployeeProject.Operations
           .FirstOrDefault(e => e.EmployeeID == id);
     }
 
+    public Employee? InactiveById(int id)
+    {
+      using var db = new AppDb();
+      return db.Employees
+          .Where(e => e.Status == "inactive")
+          .FirstOrDefault(e => e.EmployeeID == id);
+    }
+
   }
 }
