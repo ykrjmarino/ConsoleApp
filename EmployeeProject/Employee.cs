@@ -14,5 +14,6 @@ namespace EmployeeProject
     public required decimal Salary { get; set; }
     public DateTime HireDate { get; set; }
     public string Email { get; set; } = string.Empty;
+    public string Status { get; set; } = "active";
   }
 }
