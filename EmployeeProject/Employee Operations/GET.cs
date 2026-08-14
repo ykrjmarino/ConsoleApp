@@ -7,13 +7,17 @@ namespace EmployeeProject.Operations
     public List<Employee> All()
     {
       using var db = new AppDb();
-      return db.Employees.ToList();
+      return db.Employees
+          .Where(e => e.Status == "active")
+          .ToList();
     }
 
     public Employee? ById(int id)
     {
       using var db = new AppDb();
-      return db.Employees.FirstOrDefault(e => e.EmployeeID == id);
+      return db.Employees
+          .Where(e => e.Status == "active")
+          .FirstOrDefault(e => e.EmployeeID == id);
     }
 
   }
