@@ -61,9 +61,18 @@ namespace EmployeeProject
         Console.ResetColor();
     }
 
-    private static void ConsoleMenuChoices()
+    private static void ConsoleMenuChoices(Get getFromDb)
     {
+      int totalActive = getFromDb.CountAll(); 
+      decimal avgSalary = getFromDb.averageSalary();
+
       Console.Clear();
+      Console.WriteLine("┌────────────────────┐  ┌────────────────────┐");
+      Console.WriteLine("│  Active Employees  │  │   Average Salary   │");
+      Console.WriteLine("├────────────────────┤  ├────────────────────┤");
+      Console.WriteLine($"│{totalActive,-19} │  │{$"₱{avgSalary:N2}",-19} │");
+      Console.WriteLine("└────────────────────┘  └────────────────────┘");
+      Console.WriteLine();
       Console.WriteLine("========================================"); 
       Console.WriteLine("           Employee Management          "); 
       Console.WriteLine("========================================"); 
@@ -375,7 +384,7 @@ namespace EmployeeProject
 
       do
       {
-        ConsoleMenuChoices();
+        ConsoleMenuChoices(getFromDb);
         
         int mainChoice = Choice("Input a valid number choice");
         if (mainChoice == -143) continue;
