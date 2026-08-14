@@ -8,7 +8,7 @@ namespace EmployeeProject
   {
     private static int Choice(string message) //for letters only
     {
-      if (!int.TryParse(Console.ReadLine(), out int mainChoice) || (mainChoice < 0)) {
+      if (!int.TryParse(Console.ReadLine(), out int mainChoice) || (mainChoice < 0)) { //+positive number onli
         Console.Clear();
         Console.WriteLine("========================================"); 
         Console.WriteLine("                 Invalid!               "); 
@@ -69,6 +69,7 @@ namespace EmployeeProject
       Console.WriteLine(">  [1] View Employee(s)");
       Console.WriteLine(">  [2] Add Employee");
       Console.WriteLine(">  [3] Update Employee");
+      Console.WriteLine(">  [4] Delete Employee");
       Console.WriteLine(">  [0] Exit");
       Console.Write(">> ");
     }
@@ -255,12 +256,70 @@ namespace EmployeeProject
       }
     }
 
+    private void DeleteEmployee(Get getFromDb, Delete deleteFromDb)
+    {
+      //ask for employee ID to delete (soft) naol
+      Console.Write(">  Employee ID: ");
+      int employeeID;
+      while (!int.TryParse(Console.ReadLine(), out employeeID)) //while the input is not a number(s)
+      { 
+        Console.WriteLine("Invalid ID! Input valid Employee ID number");
+        Console.Write(">  Employee ID: ");
+      }
+      
+      Employee? foundEmployee = getFromDb.ById(employeeID); //returns the employee details
+
+      if (foundEmployee == null) {
+        Thread.Sleep(500); Console.Clear();
+        Console.WriteLine($"Employee ID: {employeeID}"); 
+        Console.WriteLine("========================================"); 
+        Console.WriteLine("           No Employee Found...         "); 
+        Console.WriteLine("========================================"); 
+        ClearTerminal();
+        return;
+      }
+      
+      Thread.Sleep(800); Console.Clear();
+      ConsoleEmployeeDetails(foundEmployee);
+
+      Console.WriteLine("Are you sure you want to delete? (You got two choices: yes or !yes)");
+      Console.Write(">> ");
+
+      while (true) 
+      { 
+        string? shouldDelete = Console.ReadLine();
+
+        if (shouldDelete?.Trim().ToLower() == "yes")
+        {
+          Console.WriteLine("shingshong oo");
+
+          bool deletedEmployee = deleteFromDb.DeleteById(employeeID); //return true of false
+          //stores and executes
+
+          if (deletedEmployee) Console.WriteLine("Employee successfully deleted!");
+          else Console.WriteLine("Employee not found or deletion failed.");
+
+          ClearTerminal();
+          break;
+        } 
+        if (shouldDelete?.Trim().ToLower() == "!yes"){
+          Console.WriteLine("Canceled action. Employee not deleted.");
+          ClearTerminal();
+          break;
+        }
+        Console.WriteLine("Invalid Input! Please type 'yes' or '!yes'");
+        Console.Write(">> ");
+      }   
+    }
+
     public void ShowMainMenu()
     {
       bool alisNaBa = false;
       var getFromDb = new Get();
       var postToDb = new Post();
-      var updateDb = new Update();
+      var updateDb = new Update(); //not needed here kase nadeclare na sa update method(?)
+      var deleteFromDb = new Delete(); //samedt here
+
       do
       {
         ConsoleMenuChoices();
@@ -269,7 +328,7 @@ namespace EmployeeProject
         if (mainChoice == -143) continue;
 
         switch (mainChoice) {
-          case 1: //GET
+          case 1: //GET --- SearchEmployee(viewChoice, getFromDb); ShowAllEmployee(getFromDb);
             ConsoleViewingEmployee();
             int viewChoice = Choice("Input a valid number choice");
             if (viewChoice == -143) continue;
@@ -291,7 +350,7 @@ namespace EmployeeProject
                 break;
             }
             break;
-          case 2: //POST
+          case 2: //POST --- postToDb.AddEmployee(newEmpl);
             var (firstName, middleName, lastName, department, salary, hireDate) = ConsoleAddEmployee();
 
             Employee newEmpl = new Employee
@@ -308,8 +367,11 @@ namespace EmployeeProject
             Console.WriteLine("Employee added successfully!");
             ClearTerminal();
             break;
-          case 3:
+          case 3: //UPDATE (patch talaga) --- UpdateEmployee(getFromDb, updateDb);
               UpdateEmployee(getFromDb, updateDb);
+            break;
+          case 4: //DELETE --- DeleteEmployee(getFromDb, deleteFromDb);
+              DeleteEmployee(getFromDb, deleteFromDb);
             break;
           case 0:
             Console.Clear();
